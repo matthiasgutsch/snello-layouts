@@ -1,6 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpResourceRequest } from '@angular/common/http';
 import { FieldDefinition } from './models';
+
+/**
+ * The data fields of a field-definition list: a "button" field is a form action with no column (snello skips it in
+ * tables and writes), so layouts never offers it in forms, filters or request bodies.
+ */
+export function dataFields(value: unknown): FieldDefinition[] {
+  return Array.isArray(value) ? (value as FieldDefinition[]).filter((field) => field?.type !== 'button') : [];
+}
 import { RUNTIME_CONFIG } from './runtime-config';
 
 @Injectable({ providedIn: 'root' })
@@ -11,6 +19,8 @@ export class SnelloApi {
   readonly dataList = trimSlash(this.config.data_list_api_path);
   readonly documents = trimSlash(this.config.document_api_path);
   readonly layouts = trimSlash(this.config.layouts_api_path);
+  /** The API this app talks to, for messages ("Can't read metadata from ..."): never a hard-coded server. */
+  readonly apiHost = hostOf(this.config.api_service_path);
 
   metadatasRequest(): HttpResourceRequest {
     return {
@@ -117,4 +127,13 @@ export function joinSelect(field: FieldDefinition): string {
   }
   names.add(joinKeyName(field));
   return [...names].join(',');
+}
+
+/** "https://api.sne.lol/api" -> "api.sne.lol", "/api" (same origin) -> this page's host. */
+function hostOf(url: string): string {
+  try {
+    return new URL(url, globalThis.location?.href ?? 'http://localhost').host;
+  } catch {
+    return url;
+  }
 }

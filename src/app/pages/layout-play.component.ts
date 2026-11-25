@@ -21,7 +21,7 @@ import {
 import { FieldDefinition, Metadata } from '../core/models';
 import { LayoutStore } from '../core/layout-store';
 import { MetadataCatalog } from '../core/metadata-catalog';
-import { SnelloApi, joinKeyName, joinLabelName, joinSelect } from '../core/snello-api';
+import { SnelloApi, dataFields, joinKeyName, joinLabelName, joinSelect } from '../core/snello-api';
 import { ApiPanelState } from '../core/api-panel-state';
 import { ToastService } from '../core/toast';
 import { humanLabel, isUuid, relationMark, rowsOf, splitCsv } from '../formly/kit';
@@ -123,7 +123,7 @@ export class LayoutPlayComponent {
     return name ? this.api.fieldsRequest(name) : undefined;
   }, {
     defaultValue: [],
-    parse: (value) => (Array.isArray(value) ? (value as FieldDefinition[]) : []),
+    parse: dataFields,
   });
 
   readonly definitions = computed(() => {
@@ -221,6 +221,10 @@ export class LayoutPlayComponent {
     };
     const sort = this.sortField();
     if (sort) params['_sort'] = `${sort}:${this.sortDir()}`;
+    // ask for the columns the list shows: without select_fields snello answers only the table's own list columns
+    // (metadata select_fields), and every other column of the layout stays "—"
+    const shown = this.columns().map((column) => column.fieldName).filter((name) => !!name);
+    if (shown.length) params['select_fields'] = [...new Set(['uuid', ...shown])].join(',');
     return this.api.recordsRequest(layout.metadataName, params);
   }, {
     defaultValue: [],

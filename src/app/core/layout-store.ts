@@ -31,7 +31,7 @@ export class LayoutStore {
       this.error.set('');
     } catch {
       this.documents.set([]);
-      this.error.set("Can't read layouts from api.sne.lol.");
+      this.error.set(`Can't read layouts from ${this.api.apiHost}.`);
     } finally {
       this.ready.set(true);
     }

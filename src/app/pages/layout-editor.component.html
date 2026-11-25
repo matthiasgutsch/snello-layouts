@@ -43,7 +43,7 @@
   <p class="banner">{{ loadError() }}</p>
 }
 @if (metadatas.resource.status() === 'error') {
-  <p class="banner">Can't read metadata from api.sne.lol.</p>
+  <p class="banner">Can't read metadata from {{ api.apiHost }}.</p>
 }
 
 <ng-template #setupFields>
@@ -98,7 +98,7 @@
 @if (!metadataName()) {
   <section class="empty">
     <h2>Choose a metadata</h2>
-    <p>Field definitions come from https://api.sne.lol/api and become the layout material.</p>
+    <p>Field definitions come from {{ api.records }} and become the layout material.</p>
   </section>
 } @else if (fieldResource.isLoading()) {
   <p class="muted">Loading field definitions…</p>

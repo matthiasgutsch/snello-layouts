@@ -16,7 +16,7 @@ import { seedBody } from '../core/layout-shape';
 import { FieldDefinition, LayoutDocument, PageKind } from '../core/models';
 import { LayoutStore } from '../core/layout-store';
 import { groupsOf, MetadataCatalog } from '../core/metadata-catalog';
-import { SnelloApi } from '../core/snello-api';
+import { SnelloApi, dataFields } from '../core/snello-api';
 import { Icon } from '../icon';
 import { MetaIcon } from '../meta-icon';
 import { PageBar } from '../page-bar';
@@ -33,7 +33,7 @@ const PAGE_SIZES = [10, 20, 50];
 export class LayoutListComponent {
   private readonly store = inject(LayoutStore);
   private readonly http = inject(HttpClient);
-  private readonly api = inject(SnelloApi);
+  protected readonly api = inject(SnelloApi);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly query = toSignal(this.route.queryParamMap);
@@ -357,7 +357,7 @@ export class LayoutListComponent {
   private async loadFields(table: string): Promise<FieldDefinition[]> {
     const request = this.api.fieldsRequest(table);
     const value = await firstValueFrom(this.http.get<unknown>(request.url));
-    const fields = Array.isArray(value) ? (value as FieldDefinition[]) : [];
+    const fields = dataFields(value);
     return fields.sort((left, right) => (left.order_num ?? 0) - (right.order_num ?? 0));
   }
 

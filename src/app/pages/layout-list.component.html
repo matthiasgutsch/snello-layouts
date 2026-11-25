@@ -25,7 +25,7 @@
 </app-page-bar>
 
 @if (metadatas.resource.status() === 'error') {
-  <p class="banner">Can't read metadata from api.sne.lol.</p>
+  <p class="banner">Can't read metadata from {{ api.apiHost }}.</p>
 }
 @if (layoutsError()) {
   <p class="banner">{{ layoutsError() }}</p>

@@ -28,7 +28,7 @@ import {
 import { conditionNeedsValue, QUERY_CONDITIONS } from '../core/query-conditions';
 import { LayoutStore } from '../core/layout-store';
 import { MetadataCatalog } from '../core/metadata-catalog';
-import { SnelloApi } from '../core/snello-api';
+import { SnelloApi, dataFields } from '../core/snello-api';
 import { ToastService } from '../core/toast';
 import { FieldRow } from '../field-row';
 import { Icon } from '../icon';
@@ -53,7 +53,7 @@ interface LayoutDraft {
   templateUrl: './layout-editor.component.html',
 })
 export class LayoutEditorComponent {
-  private readonly api = inject(SnelloApi);
+  protected readonly api = inject(SnelloApi);
   private readonly store = inject(LayoutStore);
   readonly metadatas = inject(MetadataCatalog);
   private readonly router = inject(Router);
@@ -96,7 +96,7 @@ export class LayoutEditorComponent {
     return name ? this.api.fieldsRequest(name) : undefined;
   }, {
     defaultValue: [],
-    parse: (value) => (Array.isArray(value) ? (value as FieldDefinition[]) : []),
+    parse: dataFields,
   });
 
   readonly fields = computed(() => {

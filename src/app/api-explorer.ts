@@ -6,7 +6,7 @@ import { ButtonDirective } from '@openng/optimus-ui/button';
 import { ApiPanelState, ApiRequestPreset } from './core/api-panel-state';
 import { logicalFieldType } from './core/field-types';
 import { FieldDefinition } from './core/models';
-import { SnelloApi } from './core/snello-api';
+import { SnelloApi, dataFields } from './core/snello-api';
 import { ApiOperation, ApiParam, parseSpec } from './core/openapi';
 import { QUERY_CONDITIONS } from './core/query-conditions';
 import { RUNTIME_CONFIG } from './core/runtime-config';
@@ -423,7 +423,7 @@ export class ApiExplorer {
   readonly fieldsRes = httpResource<FieldDefinition[]>(() => {
     const table = this.activeTable();
     return table ? this.snello.fieldsRequest(table) : undefined;
-  }, { defaultValue: [], parse: (value) => (Array.isArray(value) ? (value as FieldDefinition[]) : []) });
+  }, { defaultValue: [], parse: dataFields });
 
   readonly tableFields = computed(() =>
     this.fieldsRes
